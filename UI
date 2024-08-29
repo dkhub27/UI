@@ -388,108 +388,65 @@ local neon = (function() -- Open sourced neon module
 end)()
 --end
 
-function RayfieldLibrary:Notify(Title,Content,Image)
-	spawn(function()
-		local Notification = Notifications.Template:Clone()
-		Notification.Parent = Notifications
-		Notification.Name = Title
-		Notification.Visible = true
+function RayfieldLibrary:Notify(Title, Content, Image)
+    spawn(function()
+        local Notification = Notifications.Template:Clone()
+        Notification.Parent = Notifications
+        Notification.Name = Title
+        Notification.Visible = true
 
-		local blurlight = nil
-		if not getgenv().SecureMode then
-			blurlight = Instance.new("DepthOfFieldEffect",game:GetService("Lighting"))
-			blurlight.Enabled = true
-			blurlight.FarIntensity = 0
-			blurlight.FocusDistance = 51.6
-			blurlight.InFocusRadius = 50
-			blurlight.NearIntensity = 1
-			game:GetService("Debris"):AddItem(script,0)
-		end
+        -- Adiciona um efeito de profundidade de campo, se o SecureMode não estiver ativado
+        local blurlight = nil
+        if not getgenv().SecureMode then
+            blurlight = Instance.new("DepthOfFieldEffect", game:GetService("Lighting"))
+            blurlight.Enabled = true
+            blurlight.FarIntensity = 0
+            blurlight.FocusDistance = 51.6
+            blurlight.InFocusRadius = 50
+            blurlight.NearIntensity = 1
+            game:GetService("Debris"):AddItem(script, 0)
+        end
 
+        -- Configurações de texto e imagem da notificação
+        Notification.Title.Text = Title or "Unknown"
+        Notification.Title.TextTransparency = 1
+        Notification.Title.TextColor3 = Color3.fromRGB(240, 240, 240)
+        Notification.Description.Text = Content or "Unknown"
+        Notification.Description.TextTransparency = 1
+        Notification.Description.TextColor3 = Color3.fromRGB(240, 240, 240)
+        Notification.Icon.Image = Image and "rbxassetid://"..tostring(Image) or "rbxassetid://3944680095"
+        Notification.Icon.ImageTransparency = 1
 
-		Notification.Title.Text = Title or "Unknown"
-		Notification.Title.TextTransparency = 1
-		Notification.Title.TextColor3 = Color3.fromRGB(240,240,240)
-		Notification.Description.Text = Content or "Unknown"
-		Notification.Description.TextTransparency = 1
-		Notification.Description.TextColor3 = Color3.fromRGB(240,240,240)
-		if Image then
-			Notification.Icon.Image = "rbxassetid://"..tostring(Image) 
-		else
-			Notification.Icon.Image = "rbxassetid://3944680095"
-		end
+        -- Verifica se o `UIStroke` existe; caso contrário, cria-o
+        if not Notification:FindFirstChild("UIStroke") then
+            local stroke = Instance.new("UIStroke", Notification)
+            stroke.Transparency = 1 -- Define a transparência inicial
+        end
 
-		Notification.Icon.ImageTransparency = 1
+        -- Configurações de posicionamento e transparência iniciais
+        Notification.Position = UDim2.new(-1.1, 0, 0.915, 0)
+        Notification.Size = UDim2.new(0, 295, 0, 91)
+        Notification.BackgroundTransparency = 1
+        Notification.UIStroke.Transparency = 1
 
-		Notification.Parent = Notifications
-		Notification.Position = UDim2.new(-1.1,0,0.915,0)
-		Notification.Size = UDim2.new(0, 295, 0, 91)
-		Notification.BackgroundTransparency = 1
-		Notification.UIStroke.Transparency = 1
+        -- Adiciona a notificação à pilha
+        table.insert(NotificationStack, Notification)
+        FigureNotifications()
 
-		table.insert(NotificationStack,Notification)
-		FigureNotifications()
+        -- Animações de entrada (transparência e posição)
+        TweenService:Create(Notification, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.1}):Play()
+        TweenService:Create(Notification.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0.7}):Play()
+        Notification:TweenPosition(UDim2.new(0.5, 0, 0.915, 0), 'Out', 'Quint', 0.8, true)
 
-
-		TweenService:Create(Notification, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.1}):Play()
-		TweenService:Create(Notification.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0.7}):Play()
-		Notification:TweenPosition(UDim2.new(0.5,0,0.915,0),'Out','Quint',0.8,true)
-
-		wait(0.3)
-		TweenService:Create(Notification.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
-		TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
-		TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-		wait(0.2)
-
-
-
-		-- Requires Graphics Level 8-10
-		if getgenv().SecureMode == nil then
-			TweenService:Create(Notification, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.3}):Play()
-		else
-			if not getgenv().SecureMode then
-				TweenService:Create(Notification, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.3}):Play()
-			else 
-				TweenService:Create(Notification, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
-			end
-		end
-
-		if Rayfield.Name == "Rayfield" then
-			neon:BindFrame(Notification.BlurModule, {
-				Transparency = 0.98;
-				BrickColor = BrickColor.new("Institutional white");
-			})
-		end
-		wait(NotificationDuration - 0.5)
-
-
-		TweenService:Create(Notification.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Position = UDim2.new(0.47, 0,0.234, 0)}):Play()
-		TweenService:Create(Notification.Description, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {Position = UDim2.new(0.528, 0,0.637, 0)}):Play()
-		TweenService:Create(Notification, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Size = UDim2.new(0, 280, 0, 83)}):Play()
-		TweenService:Create(Notification.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-		TweenService:Create(Notification, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
-
-		wait(0.3)
-		TweenService:Create(Notification.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
-		TweenService:Create(Notification.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-		TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
-		wait(0.05)
-
-		Notification:TweenPosition(UDim2.new(1.5,0,Notification.Position.Y.Scale,0),'In','Quint',0.8,true)
-		for a,b in pairs(NotificationStack) do
-			if b == Notification then
-				table.remove(NotificationStack,a)
-			end
-		end
-		wait(1.35)
-		if not getgenv().SecureMode then
-			neon:UnbindFrame(Notification.BlurModule)
-			blurlight:Destroy()
-		end
-		Notification:Destroy()
-		FigureNotifications()
-	end)
+        wait(0.3)
+        TweenService:Create(Notification.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
+        TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
+        TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
+        
+        wait(0.2)
+    end)
 end
+
 
 function Hide()
 	Debounce = true
