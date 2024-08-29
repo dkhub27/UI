@@ -395,7 +395,7 @@ function RayfieldLibrary:Notify(Title, Content, Image)
         Notification.Name = Title
         Notification.Visible = true
 
-        -- Adiciona um efeito de profundidade de campo, se o SecureMode não estiver ativado
+        -- Efeito de profundidade de campo, se o SecureMode não estiver ativado
         local blurlight = nil
         if not getgenv().SecureMode then
             blurlight = Instance.new("DepthOfFieldEffect", game:GetService("Lighting"))
@@ -407,33 +407,33 @@ function RayfieldLibrary:Notify(Title, Content, Image)
             game:GetService("Debris"):AddItem(script, 0)
         end
 
-        -- Configurações de texto e imagem da notificação
+        -- Configuração de título, descrição e imagem
         Notification.Title.Text = Title or "Unknown"
         Notification.Title.TextTransparency = 1
         Notification.Title.TextColor3 = Color3.fromRGB(240, 240, 240)
         Notification.Description.Text = Content or "Unknown"
         Notification.Description.TextTransparency = 1
         Notification.Description.TextColor3 = Color3.fromRGB(240, 240, 240)
-        Notification.Icon.Image = Image and "rbxassetid://"..tostring(Image) or "rbxassetid://3944680095"
+        Notification.Icon.Image = Image and "rbxassetid://" .. tostring(Image) or "rbxassetid://3944680095"
         Notification.Icon.ImageTransparency = 1
 
-        -- Verifica se o `UIStroke` existe; caso contrário, cria-o
+        -- Adiciona o UIStroke se não existir
         if not Notification:FindFirstChild("UIStroke") then
             local stroke = Instance.new("UIStroke", Notification)
-            stroke.Transparency = 1 -- Define a transparência inicial
+            stroke.Transparency = 1
         end
 
-        -- Configurações de posicionamento e transparência iniciais
+        -- Configuração de posicionamento e transparência iniciais
         Notification.Position = UDim2.new(-1.1, 0, 0.915, 0)
         Notification.Size = UDim2.new(0, 295, 0, 91)
         Notification.BackgroundTransparency = 1
         Notification.UIStroke.Transparency = 1
 
-        -- Adiciona a notificação à pilha
+        -- Adiciona à pilha
         table.insert(NotificationStack, Notification)
         FigureNotifications()
 
-        -- Animações de entrada (transparência e posição)
+        -- Animação de entrada
         TweenService:Create(Notification, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.1}):Play()
         TweenService:Create(Notification.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0.7}):Play()
         Notification:TweenPosition(UDim2.new(0.5, 0, 0.915, 0), 'Out', 'Quint', 0.8, true)
@@ -442,10 +442,20 @@ function RayfieldLibrary:Notify(Title, Content, Image)
         TweenService:Create(Notification.Icon, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {ImageTransparency = 0}):Play()
         TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
         TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
-        
-        wait(0.2)
+
+        -- Função do botão Ignore para fechar a notificação
+        Notification.IgnoreButton.MouseButton1Click:Connect(function()
+            Notification:Destroy()
+        end)
+
+        -- Espera 5 segundos antes de fechar automaticamente
+        wait(10)
+        Notification:TweenPosition(UDim2.new(1.5, 0, 0.915, 0), 'Out', 'Quint', 0.8, true) -- Sai da tela
+        wait(0.8) -- Espera até a animação de saída terminar
+        Notification:Destroy() -- Remove a notificação
     end)
 end
+
 
 
 function Hide()
