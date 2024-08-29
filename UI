@@ -443,11 +443,6 @@ function RayfieldLibrary:Notify(Title, Content, Image)
         TweenService:Create(Notification.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
         TweenService:Create(Notification.Description, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.2}):Play()
 
-        -- Função do botão Ignore para fechar a notificação
-        Notification.IgnoreButton.MouseButton1Click:Connect(function()
-            Notification:Destroy()
-        end)
-
         -- Espera 5 segundos antes de fechar automaticamente
         wait(10)
         Notification:TweenPosition(UDim2.new(1.5, 0, 0.915, 0), 'Out', 'Quint', 0.8, true) -- Sai da tela
@@ -455,6 +450,7 @@ function RayfieldLibrary:Notify(Title, Content, Image)
         Notification:Destroy() -- Remove a notificação
     end)
 end
+
 
 
 
