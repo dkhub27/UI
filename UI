@@ -955,7 +955,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			Elements.UIPageLayout:JumpTo(TabPage)
 			Elements.UIPageLayout.Animated = true
 		end
-
+--[[
 		-- Animate
 		wait(0.1)
 		if FirstTab then
@@ -1003,7 +1003,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			end
 
 		end)
-
+]]
 		local Tab = {}
 
 		-- Button
