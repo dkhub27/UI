@@ -917,7 +917,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		TabButton.Name = Name
 		TabButton.Title.Text = Name
 		TabButton.Parent = TabList
-		TabButton.Title.TextWrapped = false
+		TabButton.Title.TextWrapped = true
 		TabButton.Size = UDim2.new(0, TabButton.Title.TextBounds.X + 30, 0, 30)
 		
 		if Image then
