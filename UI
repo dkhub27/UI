@@ -1127,13 +1127,20 @@ function RayfieldLibrary:CreateWindow(Settings)
             local Paragraph = Elements.Template.Paragraph:Clone()
             Paragraph.Title.Text = ParagraphSettings.Title
             Paragraph.Content.Text = ParagraphSettings.Content
-            Paragraph.Content.TextColor3 = ParagraphSettings.Color or Color3.fromRGB(255, 255, 255) -- Cor padrão branca
+            Paragraph.Content.TextColor3 = ParagraphSettings.Color or Color3.fromRGB(255, 255, 255)
             Paragraph.Visible = true
             Paragraph.Parent = TabPage
         
-            Paragraph.Content.Size = UDim2.new(0, 438, 0, Paragraph.Content.TextBounds.Y)
-            Paragraph.Content.Position = UDim2.new(1, -10, 0.575, 0)
-            Paragraph.Size = UDim2.new(1, -10, 0, Paragraph.Content.TextBounds.Y + 40)
+            -- Habilitar o ajuste automático de linha
+            Paragraph.Content.TextWrapped = true
+        
+            -- Ajustar a altura dinamicamente
+            Paragraph.Content.Size = UDim2.new(1, -20, 0, 0) -- Largura adaptável, altura inicial 0
+            Paragraph.Content.AutomaticSize = Enum.AutomaticSize.Y -- Ajusta automaticamente a altura
+        
+            -- Ajusta a posição e o tamanho do parágrafo
+            Paragraph.Position = UDim2.new(0, 10, 0, 0)
+            Paragraph.Size = UDim2.new(1, -20, 0, Paragraph.Content.TextBounds.Y + 40)
         
             Paragraph.BackgroundTransparency = 1
             Paragraph.UIStroke.Transparency = 1
@@ -1142,8 +1149,8 @@ function RayfieldLibrary:CreateWindow(Settings)
         
             TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
             TweenService:Create(Paragraph.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
-            TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()    
-            TweenService:Create(Paragraph.Content, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()    
+            TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
+            TweenService:Create(Paragraph.Content, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
         
             function ParagraphValue:Set(NewParagraphSettings)
                 Paragraph.Title.Text = NewParagraphSettings.Title
@@ -1155,6 +1162,7 @@ function RayfieldLibrary:CreateWindow(Settings)
         
             return ParagraphValue
         end
+        
         
 
 		-- Input
