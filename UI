@@ -1134,19 +1134,26 @@ function RayfieldLibrary:CreateWindow(Settings)
             -- Habilitar o ajuste automático de linha
             Paragraph.Content.TextWrapped = true
         
-            -- Ajustar a altura dinamicamente
+            -- Calcular a altura necessária para o conteúdo
             Paragraph.Content.Size = UDim2.new(1, -20, 0, 0) -- Largura adaptável, altura inicial 0
             Paragraph.Content.AutomaticSize = Enum.AutomaticSize.Y -- Ajusta automaticamente a altura
         
-            -- Ajusta a posição e o tamanho do parágrafo
-            Paragraph.Position = UDim2.new(0, 10, 0, 0)
-            Paragraph.Size = UDim2.new(1, -20, 0, Paragraph.Content.TextBounds.Y + 40)
+            -- Atualizar o tamanho com base no conteúdo do texto
+            local function UpdateParagraphSize()
+                local textHeight = Paragraph.Content.TextBounds.Y
+                Paragraph.Size = UDim2.new(1, -20, 0, textHeight + 40) -- Ajuste o valor 40 se necessário
+            end
         
+            -- Executar a atualização do tamanho inicial
+            UpdateParagraphSize()
+        
+            -- Configurações de transparência
             Paragraph.BackgroundTransparency = 1
             Paragraph.UIStroke.Transparency = 1
             Paragraph.Title.TextTransparency = 1
             Paragraph.Content.TextTransparency = 1
         
+            -- Animações de exibição
             TweenService:Create(Paragraph, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {BackgroundTransparency = 0}):Play()
             TweenService:Create(Paragraph.UIStroke, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {Transparency = 0}):Play()
             TweenService:Create(Paragraph.Title, TweenInfo.new(0.7, Enum.EasingStyle.Quint), {TextTransparency = 0}):Play()
@@ -1158,6 +1165,7 @@ function RayfieldLibrary:CreateWindow(Settings)
                 if NewParagraphSettings.Color then
                     Paragraph.Content.TextColor3 = NewParagraphSettings.Color
                 end
+                UpdateParagraphSize() -- Atualizar o tamanho após as mudanças
             end
         
             return ParagraphValue
